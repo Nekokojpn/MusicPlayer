@@ -14,22 +14,29 @@ class PlayerActivity : AppCompatActivity() {
         title_view.text = intent.getStringExtra("title")
         var mp: MediaPlayer? = null
         var b = true
+
         play_btn.setOnClickListener {
             if(b) {
                 if (mp != null)
-                    mp!!.stop()
+                    mp!!.pause()
                 mp = AsyncMp(intent.getStringExtra("path")).execute().get()
                 mp!!.start()
                 b = false
-                play_btn.text = "STOP"
+                play_btn.setImageResource(R.drawable.stopbtn)
             }
             else{
                 if (mp != null)
-                    mp!!.stop()
+                    mp!!.pause()
                 b = true
-                play_btn.text = "PLAY"
+                play_btn.setImageResource(R.drawable.playbtn)
             }
         }
         play_btn.performClick()
+        minus.setOnClickListener {
+            mp!!.seekTo(mp!!.currentPosition - 10000)
+        }
+        plus.setOnClickListener {
+            mp!!.seekTo(mp!!.currentPosition + 10000)
+        }
     }
 }

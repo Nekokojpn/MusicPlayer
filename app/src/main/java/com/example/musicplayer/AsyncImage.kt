@@ -29,7 +29,6 @@ class AsyncImage : AsyncTask<String, Int, Bitmap> {
             urlConnection.instanceFollowRedirects = false
             urlConnection.connect()
             var i = urlConnection.responseCode
-            //val br = BufferedReader(InputStreamReader(urlConnection!!.inputStream))
 
             if(i == HttpURLConnection.HTTP_OK){
                 var inp =urlConnection.inputStream

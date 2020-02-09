@@ -15,6 +15,7 @@ import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
 
+    //Declares server ip address and URLs.
     val ip = "192.168.1.12"
     val search_url = "http://${ip}/musicplayer/search.php"
     val thumb_url = "http://${ip}/musicplayer/thumb/"
@@ -23,10 +24,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //When search button clicked
         search_btn.setOnClickListener {
             clearElements()
+            var intent: Intent? = null
+
+            //Connect to DB then get result
             var res = AsyncSearch(search_url + "?title=" + title_in.text.toString()).execute().get()
-            Log.d("", res)
+
+            //Prepare regex
             val pattern = """::title : .*?end;::"""
             val regex = Regex(pattern)
             if (res != null) {
@@ -37,15 +44,15 @@ class MainActivity : AppCompatActivity() {
                         val asIm = AsyncImage(thumb_url + regexSearch("""img_path : .*?end;""", t, "img_path : ", "end;"))
                         addElementImage(asIm.execute().get())
                         tex.setOnClickListener {
-                            val intent = Intent(this@MainActivity, PlayerActivity::class.java)
-                            intent.putExtra("path", music_url + regexSearch(
+                            intent = Intent(this@MainActivity, PlayerActivity::class.java)
+                            intent!!.putExtra("path", music_url + regexSearch(
                                 """path : .*?end;""",
                                 t,
                                 "path : ",
                                 "end;"
                             ))
-                            intent.putExtra("img", thumb_url + regexSearch("""img_path : .*?end;""", t, "img_path : ", "end;"))
-                            intent.putExtra("title", regexSearch("""title : .*?end;""", t, "title : ", "end;"))
+                            intent!!.putExtra("img", thumb_url + regexSearch("""img_path : .*?end;""", t, "img_path : ", "end;"))
+                            intent!!.putExtra("title", regexSearch("""title : .*?end;""", t, "title : ", "end;"))
                             startActivity(intent)
                         }
                     }
@@ -57,7 +64,7 @@ class MainActivity : AppCompatActivity() {
     }
     private fun displayEmpty(){
         clearElements()
-        addElementText("NO RESULTS...")
+        addElementText("NO RESULTS")
     }
     private fun addElementText(text: String): TextView {
         val tex = TextView(this)
